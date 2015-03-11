@@ -24,7 +24,7 @@ namespace Mozu.Api.WebToolKit
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                version.Assemblies.Add(new Models.AssemblyInfo { Name = assembly.GetName().Name, Version = GetVersionStr(assembly.GetName().Version) });
+                version.Assemblies.Add(new Models.AssemblyInfo { Name = assembly.GetName().Name, Version = assembly.GetName().Version.ToString() });
             }
 
             return version;
