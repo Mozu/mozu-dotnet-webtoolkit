@@ -19,17 +19,22 @@ namespace Mozu.Api.WebToolKit.Filters
             if (!ConfigurationAuth.IsRequestValid(filterContext.HttpContext.Request))
                 throw new UnauthorizedAccessException();
             var request = filterContext.RequestContext.HttpContext.Request;
-            var apiContext = new ApiContext(request.Headers);
-            if (apiContext.TenantId == 0)
+            var apiContext = new ApiContext(request.Headers); //try to load from headers
+            if (apiContext.TenantId == 0) //try to load from body
+                apiContext = new ApiContext(request.Params);
+
+            if (apiContext.TenantId == 0) //if not found load from query string
             {
-                apiContext = new ApiContext(int.Parse(request.QueryString.Get("tenantId")));
+                var tenantId = request.QueryString.Get("tenantId");
+                if (String.IsNullOrEmpty(tenantId))
+                    throw new UnauthorizedAccessException();
+                apiContext = new ApiContext(int.Parse(tenantId));
             }
 
             try
             {
                 var tenantResource = new TenantResource();
                 var tenant = Task.Factory.StartNew(() => tenantResource.GetTenantAsync(apiContext.TenantId).Result, TaskCreationOptions.LongRunning).Result;
-                
             }
             catch (ApiException exc)
             {
