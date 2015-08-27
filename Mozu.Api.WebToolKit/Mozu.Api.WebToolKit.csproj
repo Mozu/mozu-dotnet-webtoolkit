@@ -51,9 +51,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mozu.Api.SDK.1.18.1-RC3\lib\net45\Mozu.Api.dll</HintPath>
     </Reference>
-    <Reference Include="Mozu.Api.ToolKit, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Mozu.Api.ToolKit.1.2.9-dev1508202319\lib\Mozu.Api.ToolKit.dll</HintPath>
+    <Reference Include="Mozu.Api.ToolKit">
+      <HintPath>..\packages\Mozu.Api.ToolKit.1.2.9-RC1\lib\Mozu.Api.ToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
