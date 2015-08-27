@@ -47,11 +47,13 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Mozu.Api">
-      <HintPath>..\packages\Mozu.Api.SDK.1.15.2\lib\net45\Mozu.Api.dll</HintPath>
+    <Reference Include="Mozu.Api, Version=1.18.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Mozu.Api.SDK.1.18.1-RC3\lib\net45\Mozu.Api.dll</HintPath>
     </Reference>
-    <Reference Include="Mozu.Api.ToolKit">
-      <HintPath>..\packages\Mozu.Api.ToolKit.1.2.2\lib\Mozu.Api.ToolKit.dll</HintPath>
+    <Reference Include="Mozu.Api.ToolKit, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Mozu.Api.ToolKit.1.2.9-dev1508202319\lib\Mozu.Api.ToolKit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -110,6 +112,7 @@
     <Compile Include="Controllers\VersionController.cs" />
     <Compile Include="Events\EventRouteHandler.cs" />
     <Compile Include="Filters\ApiAuthFilter.cs" />
+    <Compile Include="Filters\AuthCookie.cs" />
     <Compile Include="Filters\ConfigurationAuthFilter.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Logging\ApiLogger.cs" />
@@ -123,6 +126,11 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmailTemplates\ErrorEmailTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
