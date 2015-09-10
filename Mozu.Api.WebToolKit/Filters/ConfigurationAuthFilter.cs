@@ -27,8 +27,13 @@ namespace Mozu.Api.WebToolKit.Filters
 
             var request = filterContext.RequestContext.HttpContext.Request;
             var apiContext = new ApiContext(request.Headers); //try to load from headers
-            if (apiContext.TenantId == 0) //try to load from body
+            if (apiContext.TenantId == 0)
+            {
+                //try to load from body
                 apiContext = new ApiContext(request.Form);
+            }
+
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1")));
 
             if (apiContext.TenantId == 0) //if not found load from query string
             {
@@ -55,15 +60,16 @@ namespace Mozu.Api.WebToolKit.Filters
             
             string cookieToken;
             string formToken;
-            filterContext.HttpContext.Request.Cookies.Remove("userId");
+
 
             AntiForgery.GetTokens(null, out cookieToken, out formToken);
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", formToken));
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", cookieToken));
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("tenantId", apiContext.TenantId.ToString()));
             if (!string.IsNullOrEmpty(apiContext.UserId))
-                filterContext.HttpContext.Response.Cookies.Add(GetCookie("userId", apiContext.UserId));
-
+                filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.USERID, apiContext.UserId));
+            else
+                filterContext.HttpContext.Response.Cookies.Remove(Headers.USERID);
             var hashString = string.Concat(apiContext.TenantId.ToString(), cookieToken, formToken);
             if (!string.IsNullOrEmpty(apiContext.UserId))
             {

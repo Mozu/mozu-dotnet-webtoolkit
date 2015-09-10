@@ -30,7 +30,7 @@ namespace Mozu.Api.WebToolKit.Filters
 
             var userId = GetCookie(request.Cookies, "userId");
             request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
-            request.Headers.Add(Headers.X_VOL_HMAC_SHA256, hash);
+            request.Headers.Add(Headers.X_VOL_HMAC_SHA256, HttpUtility.UrlDecode(hash));
 
             if (!string.IsNullOrEmpty(userId))
                 request.Headers.Add(Headers.USERID, userId);
@@ -40,7 +40,8 @@ namespace Mozu.Api.WebToolKit.Filters
             if (string.IsNullOrEmpty(formToken)) return false;
 
             var cookieToken = GetCookie(request.Cookies, "cookieToken");
-            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, formToken, cookieToken);
+            var isSubNavLink = GetCookie(request.Cookies, "subNavLink") == "1";
+            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, formToken, cookieToken, isSubNavLink);
         }
 
         public static bool Validate(HttpRequestMessage request)
@@ -65,10 +66,11 @@ namespace Mozu.Api.WebToolKit.Filters
             if (string.IsNullOrEmpty(formToken)) return false;
 
             var cookieToken = GetCookie(request.Headers, "cookieToken");
-            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext,formToken, cookieToken);
+            var isSubNavLink = GetCookie(request.Headers, "subNavLink") == "1";
+            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, formToken, cookieToken,isSubNavLink);
         }
 
-        private static bool Validate(IApiContext apiContext, string formToken, string cookieToken)
+        private static bool Validate(IApiContext apiContext, string formToken, string cookieToken, bool isSubNavLink)
         {
             
 
@@ -88,13 +90,13 @@ namespace Mozu.Api.WebToolKit.Filters
                 throw new UnauthorizedAccessException();
 
             var stringToHash = String.Concat(apiContext.TenantId.ToString(), cookieToken, formToken);
-            if (!String.IsNullOrEmpty(apiContext.UserId))
+            if (!String.IsNullOrEmpty(apiContext.UserId) && isSubNavLink)
             {
                 _logger.Info("Userid:" + apiContext.UserId);
                 stringToHash = String.Concat(stringToHash, apiContext.UserId);
             }
             var computedHash = Security.SHA256Generator.GetHash(string.Empty, stringToHash );
-            if (HttpUtility.UrlDecode(apiContext.HMACSha256) != computedHash)
+            if (apiContext.HMACSha256 != computedHash)
             {
                 _logger.Info("Header hash : " + HttpUtility.UrlDecode(apiContext.HMACSha256));
                 _logger.Info("Computed hash : " + computedHash);
