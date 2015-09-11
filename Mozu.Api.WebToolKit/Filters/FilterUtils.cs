@@ -40,8 +40,10 @@ namespace Mozu.Api.WebToolKit.Filters
             if (string.IsNullOrEmpty(formToken)) return false;
 
             var cookieToken = GetCookie(request.Cookies, "cookieToken");
+            if (string.IsNullOrEmpty(cookieToken)) return false;
+
             var isSubNavLink = GetCookie(request.Cookies, "subNavLink") == "1";
-            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, formToken, cookieToken, isSubNavLink);
+            return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, HttpUtility.UrlDecode(formToken), HttpUtility.UrlDecode(cookieToken), isSubNavLink);
         }
 
         public static bool Validate(HttpRequestMessage request)

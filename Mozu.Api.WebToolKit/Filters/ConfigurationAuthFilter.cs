@@ -63,8 +63,8 @@ namespace Mozu.Api.WebToolKit.Filters
 
 
             AntiForgery.GetTokens(null, out cookieToken, out formToken);
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", formToken));
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", cookieToken));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", HttpUtility.UrlEncode(formToken)));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", HttpUtility.UrlEncode(cookieToken)));
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("tenantId", apiContext.TenantId.ToString()));
             if (!string.IsNullOrEmpty(apiContext.UserId))
                 filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.USERID, apiContext.UserId));
