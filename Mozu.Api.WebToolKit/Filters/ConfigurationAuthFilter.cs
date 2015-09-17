@@ -47,7 +47,8 @@ namespace Mozu.Api.WebToolKit.Filters
                 }
                 apiContext = new ApiContext(int.Parse(tenantId));
             }
-            string path = filterContext.HttpContext.Request.Path + "/" + apiContext.TenantId.ToString();
+            var requestUri = filterContext.HttpContext.Request.Path.Split('/');
+            string path ="/"+ requestUri[1] + "/" + apiContext.TenantId.ToString();
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), path));
 
             try
