@@ -33,7 +33,9 @@ namespace Mozu.Api.WebToolKit.Filters
                 apiContext = new ApiContext(request.Form);
             }
 
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1")));
+            
+
+          
 
             if (apiContext.TenantId == 0) //if not found load from query string
             {
@@ -45,6 +47,8 @@ namespace Mozu.Api.WebToolKit.Filters
                 }
                 apiContext = new ApiContext(int.Parse(tenantId));
             }
+            string path = filterContext.HttpContext.Request.Path + "/" + apiContext.TenantId.ToString();
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), path));
 
             try
             {
@@ -61,13 +65,16 @@ namespace Mozu.Api.WebToolKit.Filters
             string cookieToken;
             string formToken;
 
+          
+
+           
 
             AntiForgery.GetTokens(null, out cookieToken, out formToken);
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", HttpUtility.UrlEncode(formToken)));
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", HttpUtility.UrlEncode(cookieToken)));
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("tenantId", apiContext.TenantId.ToString()));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", HttpUtility.UrlEncode(formToken),path));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", HttpUtility.UrlEncode(cookieToken),path));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("tenantId", apiContext.TenantId.ToString(),path));
             if (!string.IsNullOrEmpty(apiContext.UserId))
-                filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.USERID, apiContext.UserId));
+                filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.USERID, apiContext.UserId,path));
             else
                 filterContext.HttpContext.Response.Cookies.Remove(Headers.USERID);
             var hashString = string.Concat(apiContext.TenantId.ToString(), cookieToken, formToken);
@@ -78,13 +85,16 @@ namespace Mozu.Api.WebToolKit.Filters
             }
             var hash = SHA256Generator.GetHash(string.Empty, hashString);
             _logger.Info("Computed Hash : " + hash);
-            filterContext.HttpContext.Response.Cookies.Add(GetCookie("hash", HttpUtility.UrlEncode(hash)));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie("hash", HttpUtility.UrlEncode(hash),path));
         }
 
-        public HttpCookie GetCookie(string name, string value)
+        public HttpCookie GetCookie(string name, string value, string path)
         {
             var cookie = new HttpCookie(name, value) {Expires = DateTime.UtcNow.AddHours(1)};
-
+            cookie.Secure = true;
+            cookie.HttpOnly = true;
+            cookie.Path = path;
+           
             return cookie;
         }
     }
