@@ -9,7 +9,7 @@ using Mozu.Api.WebToolKit.Filters;
 
 namespace Mozu.Api.WebToolKit.Controllers
 {
-    [ApiAuthFilter]
+  
     [RoutePrefix("api/application")]
     public class ApplicationController : ApiController
     {

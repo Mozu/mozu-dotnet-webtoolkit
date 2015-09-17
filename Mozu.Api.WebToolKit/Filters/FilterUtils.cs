@@ -32,6 +32,8 @@ namespace Mozu.Api.WebToolKit.Filters
             request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
             request.Headers.Add(Headers.X_VOL_HMAC_SHA256, HttpUtility.UrlDecode(hash));
 
+            if (!request.Url.AbsoluteUri.Contains(tenantId)) return false;
+
             if (!string.IsNullOrEmpty(userId))
                 request.Headers.Add(Headers.USERID, userId);
             var apiContext = new ApiContext(request.Headers);
@@ -55,7 +57,7 @@ namespace Mozu.Api.WebToolKit.Filters
             if (string.IsNullOrEmpty(hash)) throw new UnauthorizedAccessException();
 
             var userId = GetCookie(request.Headers, Headers.USERID);
-
+            if (!request.RequestUri.AbsoluteUri.Contains(tenantId)) return false;
 
             request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
             request.Headers.Add(Headers.X_VOL_HMAC_SHA256, hash);
