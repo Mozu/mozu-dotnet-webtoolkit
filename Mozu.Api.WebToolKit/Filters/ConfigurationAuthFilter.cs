@@ -74,6 +74,7 @@ namespace Mozu.Api.WebToolKit.Filters
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("formToken", HttpUtility.UrlEncode(formToken),path));
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("cookieToken", HttpUtility.UrlEncode(cookieToken),path));
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("tenantId", apiContext.TenantId.ToString(),path));
+            filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.X_VOL_RETURN_URL, HttpUtility.UrlEncode(apiContext.ReturnUrl), path));
             if (!string.IsNullOrEmpty(apiContext.UserId))
                 filterContext.HttpContext.Response.Cookies.Add(GetCookie(Headers.USERID, apiContext.UserId,path));
             else

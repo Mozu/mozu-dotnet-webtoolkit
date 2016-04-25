@@ -27,10 +27,13 @@ namespace Mozu.Api.WebToolKit.Filters
 
             var hash = GetCookie(request.Cookies, "hash");
             if (string.IsNullOrEmpty(hash)) throw new UnauthorizedAccessException();
+            var returnUrl = GetCookie(request.Cookies, Headers.X_VOL_RETURN_URL);
 
             var userId = GetCookie(request.Cookies, "userId");
             request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
             request.Headers.Add(Headers.X_VOL_HMAC_SHA256, HttpUtility.UrlDecode(hash));
+            if (!string.IsNullOrEmpty(returnUrl))
+                request.Headers.Add(Headers.X_VOL_RETURN_URL, HttpUtility.UrlDecode(returnUrl));
 
             if (!request.Url.AbsoluteUri.Contains(tenantId)) return false;
 
@@ -59,8 +62,11 @@ namespace Mozu.Api.WebToolKit.Filters
             var userId = GetCookie(request.Headers, Headers.USERID);
             if (!request.RequestUri.AbsoluteUri.Contains(tenantId)) return false;
 
+            var returnUrl = GetCookie(request.Headers, Headers.X_VOL_RETURN_URL);
+
             request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
             request.Headers.Add(Headers.X_VOL_HMAC_SHA256, hash);
+            request.Headers.Add(Headers.X_VOL_RETURN_URL, returnUrl);
             if (!string.IsNullOrEmpty(userId))
                 request.Headers.Add(Headers.USERID, userId);
 
