@@ -48,7 +48,7 @@ namespace Mozu.Api.WebToolKit.Filters
                 apiContext = new ApiContext(int.Parse(tenantId));
             }
             var requestUri = filterContext.HttpContext.Request.Path.Split('/');
-            string path ="/"+ requestUri[1] + "/" + apiContext.TenantId.ToString();
+            string path ="/"+ requestUri[1] + "/" + apiContext.TenantId.ToString() + ";SameSite=None";
             filterContext.HttpContext.Response.Cookies.Add(GetCookie("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), path));
 
             try
@@ -96,7 +96,7 @@ namespace Mozu.Api.WebToolKit.Filters
             cookie.Secure = true;
             cookie.HttpOnly = true;
             cookie.Path = path;
-           
+            
             return cookie;
         }
     }
