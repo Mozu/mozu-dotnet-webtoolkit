@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+//using System.Web.Http;
 using Mozu.Api.ToolKit.Config;
 using Mozu.Api.WebToolKit.Filters;
 
 namespace Mozu.Api.WebToolKit.Controllers
 {
   
-    [RoutePrefix("api/application")]
-    public class ApplicationController : ApiController
+    [Route("api/application")]
+    [ApiController]
+    public class ApplicationController //: ApiController
     {
         private readonly IAppSetting _appSetting;
 
@@ -23,7 +26,7 @@ namespace Mozu.Api.WebToolKit.Controllers
 
         [Route("info")]
         [HttpGet]
-        public AppInfo GetAppInfo()
+        public ActionResult<AppInfo> GetAppInfo()
         {
             return new AppInfo
             {

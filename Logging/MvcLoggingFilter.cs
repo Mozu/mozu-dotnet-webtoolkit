@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+//using System.Web;
+//using System.Web.Mvc;
+using Microsoft.AspNetCore.Http.Extensions;
 using Mozu.Api.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace Mozu.Api.WebToolKit.Logging
 {
-    public class MvcLoggingFilter : ActionFilterAttribute
+    public class MvcLoggingFilter : IActionFilter//ActionFilterAttribute
     {
         
         private readonly ILogger _logger = LogManager.GetLogger(typeof(MvcLoggingFilter));
 
        
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public  void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var req = filterContext.HttpContext.Request;
 
@@ -23,9 +26,9 @@ namespace Mozu.Api.WebToolKit.Logging
 
             Trace.CorrelationManager.ActivityId = corrId;
 
-            var requestInfo = string.Format("{0} {1}", req.HttpMethod, req.Url.AbsolutePath);
+            var requestInfo = string.Format("{0} {1}", req.Method, req.GetDisplayUrl());
 
-            _logger.Debug(string.Format("{0}, Originating IP - {1} ", requestInfo, req.UserHostAddress));
+            _logger.Debug(string.Format("{0}, Originating IP - {1} ", requestInfo, req.Host.Value));
 
             if (_logger.IsDebugEnabled)
             {
@@ -33,7 +36,7 @@ namespace Mozu.Api.WebToolKit.Logging
                 _logger.Debug( RequestBody(req));
 
                 var headers = string.Empty;
-                foreach (var key in req.Headers.AllKeys)
+                foreach (var key in req.Headers.Keys)
                 {
                     if (!String.IsNullOrEmpty(headers)) headers += ", ";
                     headers += string.Format("{0} : {1}", key, req.Headers[key]);
@@ -41,7 +44,7 @@ namespace Mozu.Api.WebToolKit.Logging
                 _logger.Debug(headers);
             }
 
-            base.OnActionExecuting(filterContext);
+            //base.OnActionExecuting(filterContext);
 
             var res = filterContext.HttpContext.Response;
             res.Headers.Add(Headers.X_VOL_CORRELATION, corrId.ToString());
@@ -54,12 +57,17 @@ namespace Mozu.Api.WebToolKit.Logging
         }
 
 
-        private static string RequestBody(HttpRequestBase req)
+        private static string RequestBody(HttpRequest req)
         {
-            var bodyStream = new StreamReader(req.InputStream);
+            var bodyStream = new StreamReader(req.Body);
             bodyStream.BaseStream.Seek(0, SeekOrigin.Begin);
             var bodyText = bodyStream.ReadToEnd();
             return bodyText;
+        }
+
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

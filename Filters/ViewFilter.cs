@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+//using System.Web.Mvc;
 using Mozu.Api.Logging;
 
 namespace Mozu.Api.WebToolKit.Filters
@@ -19,10 +20,10 @@ namespace Mozu.Api.WebToolKit.Filters
 
              
 
-             var authenticated = FilterUtils.Validate(filterContext.RequestContext.HttpContext.Request);
+             var authenticated = FilterUtils.Validate(filterContext.HttpContext.Request);
              if (authenticated) return;
              filterContext.HttpContext.Response.StatusCode = 401;
-             filterContext.HttpContext.Response.End();
+             //filterContext.HttpContext.Response.End();
          }
     }
 }

@@ -1,21 +1,23 @@
 ﻿using System.Linq;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
+//using System.Web.Http;
 using Mozu.Api.WebToolKit.Models;
 
 namespace Mozu.Api.WebToolKit.Controllers
 {
-    [RoutePrefix("api/version")]
-    public class VersionController : ApiController
+    [Route("api/version")]
+    [ApiController]
+    public class VersionController:ControllerBase //: ApiController
     {
 
-        public IHttpActionResult Get()
+        public IActionResult Get()
         {
             var versions = Helper.GetVersions();
             return Ok(versions);
         }
 
         [Route("app/{appName}")]
-        public IHttpActionResult GetAppVersion(string appName)
+        public IActionResult GetAppVersion(string appName)
         {
             var versions = Helper.GetVersions();
             var appVersion = versions.Assemblies.SingleOrDefault(x => x.Name.Equals(appName));
