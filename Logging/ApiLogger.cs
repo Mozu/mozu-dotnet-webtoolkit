@@ -110,14 +110,28 @@ namespace Mozu.Api.WebToolKit.Logging
 
             if (_logger.IsDebugEnabled)
             {
-                request.EnableBuffering();
-                await using var requestStream = _recyclableMemoryStreamManager.GetStream();
+                //Adding required headers till the APIAuthFilter cookies are fixed
+
+                //if (!request.Headers.ContainsKey(Headers.X_VOL_TENANT))
+                //{
+                //    request.Headers.Add(Headers.X_VOL_TENANT, "18239");
+                //}
+
+                //if (!request.Headers.ContainsKey(Headers.USERID))
+                //{
+                //    request.Headers.Add(Headers.USERID, "355060a60a5e48eeb7f2fb8d92af2ba5");
+                //}
+
+
+                HttpRequestRewindExtensions.EnableBuffering(request);// request.EnableBuffering();
+                var requestStream = _recyclableMemoryStreamManager.GetStream();
                 await context.Request.Body.CopyToAsync(requestStream);
                 _logger.Debug(String.Format("Start Time: {0}", DateTime.Now));
                 _logger.Debug(ReadStreamInChunks(requestStream));
                 request.Body.Position = 0;
                 var headers = request.Headers.ToList().Select(x => string.Format("{0} : {1}", x.Key, x.Value.FirstOrDefault())).Aggregate((x, y) => x + " , " + y);
                 _logger.Debug(String.Format("{0} Start Time: {1}", corrId, headers));
+                await requestStream.DisposeAsync();
             }
 
         }
@@ -136,7 +150,7 @@ namespace Mozu.Api.WebToolKit.Logging
                     if (response.StatusCode==(int)HttpStatusCode.OK  && response.Body !=null)
                     {
                         var originalBodyStream = response.Body;
-                        await using var responseBody = _recyclableMemoryStreamManager.GetStream();
+                        var responseBody = _recyclableMemoryStreamManager.GetStream();
                         response.Body = responseBody;
                         await _next(context);
                         response.Body.Seek(0, SeekOrigin.Begin);
@@ -144,6 +158,7 @@ namespace Mozu.Api.WebToolKit.Logging
                         response.Body.Seek(0, SeekOrigin.Begin);
                         _logger.Debug(text);
                         await responseBody.CopyToAsync(originalBodyStream);
+                        await responseBody.DisposeAsync();
                     }
                     _logger.Debug(String.Format("End Time: {0}", DateTime.Now));
                 }
@@ -158,8 +173,8 @@ namespace Mozu.Api.WebToolKit.Logging
 
             stream.Seek(0, SeekOrigin.Begin);
 
-            using var textWriter = new StringWriter();
-            using var reader = new StreamReader(stream);
+            var textWriter = new StringWriter();
+            var reader = new StreamReader(stream);
 
             var readChunk = new char[readChunkBufferLength];
             int readChunkLength;

@@ -9,8 +9,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0-rc.1.20451.14" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.3.5" />
-    <PackageReference Include="Mozu.Api" Version="1.2041.0-netcore.15" />
-    <PackageReference Include="Mozu.Api.ToolKit" Version="1.2041.0-dotnetcore.17" />
+    <PackageReference Include="Mozu.Api" Version="1.2045.0-netcore.2" />
+    <PackageReference Include="Mozu.Api.ToolKit" Version="1.2045.0-dotnetcore.2" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
   </ItemGroup>
 

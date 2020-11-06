@@ -15,6 +15,7 @@ using Mozu.Api.Security;
 using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Mozu.Api.WebToolKit.Filters
 {
@@ -54,7 +55,9 @@ namespace Mozu.Api.WebToolKit.Filters
                 Expires = DateTime.UtcNow.AddHours(1),
                 Path = path,
                 Secure = true,
-                HttpOnly = true
+                HttpOnly = true,
+                SameSite=SameSiteMode.None
+                //Domain= new Uri(request.GetEncodedUrl()).Host
             };
             filterContext.HttpContext.Response.Cookies.Append("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), cookieOptions);
 

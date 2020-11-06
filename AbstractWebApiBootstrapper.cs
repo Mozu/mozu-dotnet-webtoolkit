@@ -39,7 +39,7 @@ namespace Mozu.Api.WebToolKit
             //containerBuilder.RegisterType<MvcLoggingFilter>().AsSelf().InstancePerRequest();
             //containerBuilder.RegisterType<VersionController>().InstancePerRequest();
             //containerBuilder.RegisterType<ApplicationController>().InstancePerRequest();
-            containerBuilder.AddTransient<EventHttpHandler>();
+            //containerBuilder.AddTransient<EventHttpHandler>();
             containerBuilder.AddTransient<EventRouteHandler>();
             //containerBuilder.AddTransient<ApiLogger>();
             containerBuilder.AddTransient<MvcLoggingFilter>();
