@@ -13,7 +13,7 @@ RUN node -e "var fs=require('fs');fs.readdir(__dirname,function(err,files){files
 RUN dotnet restore  --source https://api.nuget.org/v3/index.json --source http://ng-repo.dev.kibocommerce.com:8081/repository/nuget-localbuild/  Mozu.Api.WebToolKit.sln
 ENV mozu__appSettings__redis_host=localhost
 COPY . .
-ARG BUILD_VER=0.0.0-alphagit 
+ARG BUILD_VER=0.0.0-alphagit
 ENV BUILD_VER=$BUILD_VER
 RUN dotnet build /p:Version=${BUILD_VER}  ./Mozu.Api.WebToolKit.sln  -c Release --no-restore && \
 	dotnet pack -c Release --no-build --include-symbols /p:Version=${BUILD_VER} -o /buildoutput/nugs ./Mozu.Api.WebToolKit.sln && \
