@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Mozu.Api.WebToolKit.Filters
 {
@@ -43,6 +44,7 @@ namespace Mozu.Api.WebToolKit.Filters
                 if (String.IsNullOrEmpty(tenantId))
                 {
                     filterContext.HttpContext.Response.StatusCode = 401;
+                    filterContext.Result = new UnauthorizedResult();
                     return;
                     //filterContext.HttpContext.Response.End();
                 }
@@ -53,11 +55,10 @@ namespace Mozu.Api.WebToolKit.Filters
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = "/",
+                Path = path,
                 Secure = true,
                 HttpOnly = true,
-                SameSite=SameSiteMode.None,
-                IsEssential=true
+                SameSite=SameSiteMode.None
                 //Domain= new Uri(request.GetEncodedUrl()).Host
             };
             filterContext.HttpContext.Response.Cookies.Append("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), cookieOptions);
@@ -71,6 +72,7 @@ namespace Mozu.Api.WebToolKit.Filters
             {
                 _logger.Error(exc);
                 filterContext.HttpContext.Response.StatusCode = 401;
+                filterContext.Result = new UnauthorizedResult();
                 return;
                 //filterContext.HttpContext.Response.End();
             }
@@ -97,7 +99,7 @@ namespace Mozu.Api.WebToolKit.Filters
             var hash = SHA256Generator.GetHash(string.Empty, hashString);
             _logger.Info("Computed Hash : " + hash);
             filterContext.HttpContext.Response.Cookies.Append("hash", WebUtility.UrlEncode(hash), cookieOptions);
-            return;
+            
         }
 
         //public HttpCookie GetCookie(string name, string value, string path)
