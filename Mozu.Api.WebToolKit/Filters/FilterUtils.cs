@@ -88,22 +88,25 @@ namespace Mozu.Api.WebToolKit.Filters
 
         private static bool Validate(HttpRequest request,IApiContext apiContext, string formToken, string cookieToken, bool isSubNavLink)
         {
-            
 
+            AntiforgeryTokenSet tokens = null;
             try
             {
                 var antiForgery = request.HttpContext.RequestServices.GetService<IAntiforgery>();
-                antiForgery.ValidateRequestAsync(request.HttpContext).Wait();
+                //antiForgery.ValidateRequestAsync(request.HttpContext).Wait();
                 //AntiForgery.Validate(cookieToken, formToken);
+                tokens = antiForgery.GetTokens(request.HttpContext);//.GetTokens(null, out cookieToken, out formToken);
+                //string cookieToken = tokens.CookieToken;
+                //string formToken = tokens.FormFieldName;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
                 return false;
             }
 
             //Validate tenant access
 
-            if (apiContext.TenantId < 0) return false;
+            if (apiContext.TenantId <= 0) return false;
             if (String.IsNullOrEmpty(apiContext.HMACSha256))
                 throw new UnauthorizedAccessException();
 
