@@ -126,11 +126,11 @@ namespace Mozu.Api.WebToolKit.Logging
                 HttpRequestRewindExtensions.EnableBuffering(request);// request.EnableBuffering();
                 var requestStream = _recyclableMemoryStreamManager.GetStream();
                 await context.Request.Body.CopyToAsync(requestStream);
-                _logger.Debug(String.Format("Start Time: {0}", DateTime.Now));
-                _logger.Debug(ReadStreamInChunks(requestStream));
+                _logger.Info(String.Format("Start Time: {0}", DateTime.UtcNow));
+                _logger.Info(ReadStreamInChunks(requestStream));
                 request.Body.Position = 0;
                 var headers = request.Headers.ToList().Select(x => string.Format("{0} : {1}", x.Key, x.Value.FirstOrDefault())).Aggregate((x, y) => x + " , " + y);
-                _logger.Debug(String.Format("{0} Start Time: {1}", corrId, headers));
+                _logger.Info(String.Format("{0} Start Time: {1}", corrId, headers));
                 await requestStream.DisposeAsync();
             }
 
@@ -156,11 +156,11 @@ namespace Mozu.Api.WebToolKit.Logging
                         response.Body.Seek(0, SeekOrigin.Begin);
                         var text = await new StreamReader(response.Body).ReadToEndAsync();
                         response.Body.Seek(0, SeekOrigin.Begin);
-                        _logger.Debug(text);
+                        _logger.Info(text);
                         await responseBody.CopyToAsync(originalBodyStream);
                         await responseBody.DisposeAsync();
                     }
-                    _logger.Debug(String.Format("End Time: {0}", DateTime.Now));
+                    _logger.Info(String.Format("End Time: {0}", DateTime.UtcNow));
                 }
 
             }
