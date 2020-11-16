@@ -108,7 +108,7 @@ namespace Mozu.Api.WebToolKit.Logging
 
             _logger.Info(requestInfo);
 
-            if (_logger.IsDebugEnabled)
+            if (_logger.IsInfoEnabled)
             {
                 //Adding required headers till the APIAuthFilter cookies are fixed
 
@@ -144,7 +144,7 @@ namespace Mozu.Api.WebToolKit.Logging
 
             try
             {
-                if (_logger.IsDebugEnabled)
+                if (_logger.IsInfoEnabled)
                 {
                     
                     if (response.StatusCode==(int)HttpStatusCode.OK  && response.Body !=null)
