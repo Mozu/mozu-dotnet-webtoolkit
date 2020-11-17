@@ -164,7 +164,10 @@ namespace Mozu.Api.WebToolKit.Logging
                 }
 
             }
-            catch (Exception exc) { }
+            catch (Exception exc) 
+            {
+                _logger.Info(exc.Message,exc);
+            }
         }
 
         private static string ReadStreamInChunks(Stream stream)

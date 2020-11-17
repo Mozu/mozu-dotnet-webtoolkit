@@ -28,33 +28,42 @@ namespace Mozu.Api.WebToolKit.Filters
 
         public static bool Validate(HttpRequest request)
         {
-            var tenantId = GetCookie(request.Cookies, "tenantId");
-            if (string.IsNullOrEmpty(tenantId)) throw new UnauthorizedAccessException();
+            try
+            {
+                var tenantId = GetCookie(request.Cookies, "tenantId");
+                if (string.IsNullOrEmpty(tenantId)) throw new UnauthorizedAccessException();
 
-            var hash = GetCookie(request.Cookies, "hash");
-            if (string.IsNullOrEmpty(hash)) throw new UnauthorizedAccessException();
-            var returnUrl = GetCookie(request.Cookies, Headers.X_VOL_RETURN_URL);
+                var hash = GetCookie(request.Cookies, "hash");
+                if (string.IsNullOrEmpty(hash)) throw new UnauthorizedAccessException();
+                var returnUrl = GetCookie(request.Cookies, Headers.X_VOL_RETURN_URL);
 
-            var userId = GetCookie(request.Cookies, "userId");
-            request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
-            request.Headers.Add(Headers.X_VOL_HMAC_SHA256, WebUtility.UrlDecode(hash));
-            if (!string.IsNullOrEmpty(returnUrl))
-                request.Headers.Add(Headers.X_VOL_RETURN_URL, WebUtility.UrlDecode(returnUrl));
+                var userId = GetCookie(request.Cookies, "userId");
+                request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
+                request.Headers.Add(Headers.X_VOL_HMAC_SHA256, WebUtility.UrlDecode(hash));
+                if (!string.IsNullOrEmpty(returnUrl))
+                    request.Headers.Add(Headers.X_VOL_RETURN_URL, WebUtility.UrlDecode(returnUrl));
 
-            if (!request.GetDisplayUrl().Contains(tenantId)) return false;
+                if (!request.GetDisplayUrl().Contains(tenantId)) return false;
 
-            if (!string.IsNullOrEmpty(userId))
-                request.Headers.Add(Headers.USERID, userId);
-            var apiContext = new ApiContext(request.Headers.DictionaryToNVCollection());
+                if (!string.IsNullOrEmpty(userId))
+                    request.Headers.Add(Headers.USERID, userId);
+                var apiContext = new ApiContext(request.Headers.DictionaryToNVCollection());
 
-            var formToken = GetCookie(request.Cookies, "formToken");
-            if (string.IsNullOrEmpty(formToken)) return false;
+                var formToken = GetCookie(request.Cookies, "formToken");
+                if (string.IsNullOrEmpty(formToken)) return false;
 
-            var cookieToken = GetCookie(request.Cookies, "cookieToken");
-            if (string.IsNullOrEmpty(cookieToken)) return false;
+                var cookieToken = GetCookie(request.Cookies, "cookieToken");
+                if (string.IsNullOrEmpty(cookieToken)) return false;
 
-            var isSubNavLink = GetCookie(request.Cookies, "subNavLink") == "1";
-            return !string.IsNullOrEmpty(cookieToken) && Validate(request,apiContext, WebUtility.UrlDecode(formToken), WebUtility.UrlDecode(cookieToken), isSubNavLink);
+                var isSubNavLink = GetCookie(request.Cookies, "subNavLink") == "1";
+                return !string.IsNullOrEmpty(cookieToken) && Validate(request, apiContext, WebUtility.UrlDecode(formToken), WebUtility.UrlDecode(cookieToken), isSubNavLink);
+            }
+            catch (Exception exc)
+            {
+
+                _logger.Error(exc.Message, exc);
+            }
+            return false;
         }
 
         //public static bool Validate(HttpRequestMessage request)

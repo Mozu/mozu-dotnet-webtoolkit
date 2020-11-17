@@ -21,40 +21,20 @@ using Newtonsoft.Json;
 
 namespace Mozu.Api.WebToolKit.Filters
 {
-    //public class ApiAuthFilter : AuthorizeAttribute, IAuthorizationFilter
-    //{
-    //    private static readonly ILogger _logger = LogManager.GetLogger(typeof(ApiAuthFilter));
-
-    //    public void OnAuthorization(AuthorizationFilterContext actionContext)
-    //    {
-    //        //base.OnAuthorization(actionContext);
-
-
-    //        var authenticated = FilterUtils.Validate(actionContext.HttpContext.Request);
-
-    //        if (!authenticated)
-    //        {
-    //            actionContext.HttpContext.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
-    //            actionContext.Result = new UnauthorizedResult();
-    //        }
-    //    }
-    //}
-
-    public class ApiAuthFilter : ActionFilterAttribute//AuthorizeAttribute, IAuthorizationFilter
+    
+    public class ApiAuthFilter : ActionFilterAttribute
     {
         private static readonly ILogger _logger = LogManager.GetLogger(typeof(ApiAuthFilter));
 
-        public override void OnActionExecuting(ActionExecutingContext actionContext)
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            base.OnActionExecuting(actionContext);
-
-
-            var authenticated = FilterUtils.Validate(actionContext.HttpContext.Request);
+            base.OnActionExecuting(filterContext);
+            var authenticated = FilterUtils.Validate(filterContext.HttpContext.Request);
 
             if (!authenticated)
             {
-                actionContext.HttpContext.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
-                actionContext.Result = new UnauthorizedResult();
+                filterContext.HttpContext.Response.StatusCode = (int)(HttpStatusCode.Unauthorized);
+                filterContext.Result = new UnauthorizedResult();
             }
         }
     }

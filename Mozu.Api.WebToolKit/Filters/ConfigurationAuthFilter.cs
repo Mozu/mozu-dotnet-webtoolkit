@@ -55,7 +55,7 @@ namespace Mozu.Api.WebToolKit.Filters
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = path,
+                Path = "/",//path,
                 Secure = true,
                 HttpOnly = true,
                 SameSite=SameSiteMode.None
@@ -70,7 +70,7 @@ namespace Mozu.Api.WebToolKit.Filters
             }
             catch (ApiException exc)
             {
-                _logger.Error(exc);
+                _logger.Error(exc.Message,exc);
                 filterContext.HttpContext.Response.StatusCode = 401;
                 filterContext.Result = new UnauthorizedResult();
                 return;
