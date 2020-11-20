@@ -6,8 +6,6 @@ namespace Mozu.Api.WebToolKit
 {
     public class Helper
     {
-        
-
         public static Models.Version GetVersions()
         {
             var sdkVersion = Assembly.GetAssembly(typeof(MozuClient)).GetName();

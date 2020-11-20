@@ -18,9 +18,6 @@ namespace Mozu.Api.WebToolKit.Filters
          public override void OnActionExecuting(ActionExecutingContext filterContext)
          {
              base.OnActionExecuting(filterContext);
-
-             
-
              var authenticated = FilterUtils.Validate(filterContext.HttpContext.Request);
              if (authenticated) return;
              filterContext.HttpContext.Response.StatusCode = 401;

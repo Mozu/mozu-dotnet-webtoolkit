@@ -8,7 +8,7 @@ using Mozu.Api.Extensions;
 using Microsoft.AspNetCore.Antiforgery;
 //using System.Web;
 //using System.Web.Helpers;
-//using System.Web.Mvc;
+
 using Mozu.Api.Logging;
 using Mozu.Api.Resources.Platform;
 using Mozu.Api.Security;
@@ -46,7 +46,6 @@ namespace Mozu.Api.WebToolKit.Filters
                     filterContext.HttpContext.Response.StatusCode = 401;
                     filterContext.Result = new UnauthorizedResult();
                     return;
-                    //filterContext.HttpContext.Response.End();
                 }
                 apiContext = new ApiContext(int.Parse(tenantId));
             }
@@ -55,10 +54,11 @@ namespace Mozu.Api.WebToolKit.Filters
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = "/",//path,
+                Path = path,
                 Secure = true,
                 HttpOnly = true,
-                SameSite=SameSiteMode.None
+                SameSite=SameSiteMode.None,
+                IsEssential=true
                 //Domain= new Uri(request.GetEncodedUrl()).Host
             };
             filterContext.HttpContext.Response.Cookies.Append("subNavLink", (String.IsNullOrEmpty(apiContext.UserId) ? "0" : "1"), cookieOptions);
@@ -74,9 +74,8 @@ namespace Mozu.Api.WebToolKit.Filters
                 filterContext.HttpContext.Response.StatusCode = 401;
                 filterContext.Result = new UnauthorizedResult();
                 return;
-                //filterContext.HttpContext.Response.End();
             }
-            //Need to find replace for AntiForgery implementation
+            
             var antiforgery = filterContext.HttpContext.RequestServices.GetService<IAntiforgery>();
             var tokens = antiforgery.GetTokens(filterContext.HttpContext);//.GetTokens(null, out cookieToken, out formToken);
             string cookieToken=tokens.CookieToken;
@@ -102,14 +101,6 @@ namespace Mozu.Api.WebToolKit.Filters
             
         }
 
-        //public HttpCookie GetCookie(string name, string value, string path)
-        //{
-        //    var cookie = new HttpCookie(name, value) {Expires = DateTime.UtcNow.AddHours(1)};
-        //    cookie.Secure = true;
-        //    cookie.HttpOnly = true;
-        //    cookie.Path = path;
-           
-        //    return cookie;
-        //}
+       
     }
 }

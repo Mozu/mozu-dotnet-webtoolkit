@@ -14,7 +14,7 @@ namespace Mozu.Api.WebToolKit.Controllers
   
     [Route("api/application")]
     [ApiController]
-    public class ApplicationController //: ApiController
+    public class ApplicationController
     {
         private readonly IAppSetting _appSetting;
 

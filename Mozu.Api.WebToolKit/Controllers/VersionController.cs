@@ -7,7 +7,7 @@ namespace Mozu.Api.WebToolKit.Controllers
 {
     [Route("api/version")]
     [ApiController]
-    public class VersionController:ControllerBase //: ApiController
+    public class VersionController:ControllerBase 
     {
 
         public IActionResult Get()

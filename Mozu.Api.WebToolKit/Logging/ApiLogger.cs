@@ -14,61 +14,7 @@ using Mozu.Api.Logging;
 
 namespace Mozu.Api.WebToolKit.Logging
 {
-    //public class ApiLogger : DelegatingHandler
-    //{
-    //    //private readonly bool _isRequestResponseLoggingEnabled = false;
-    //    private readonly ILogger _logger = LogManager.GetLogger(typeof (ApiLogger));
-
-
-
-    //    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    //    {
-    //        Guid corrId = Guid.NewGuid();
-    //        if (request.Headers.Contains(Headers.X_VOL_CORRELATION))
-    //        {
-    //            var headerValues = request.Headers.GetValues(Headers.X_VOL_CORRELATION);
-    //            if (headerValues != null && !Equals(headerValues, Enumerable.Empty<string>()))
-    //                Guid.TryParse(headerValues.FirstOrDefault(), out corrId);
-    //        } else
-    //            request.Headers.Add(Headers.X_VOL_CORRELATION, corrId.ToString());
-
-    //        Trace.CorrelationManager.ActivityId = corrId;
-
-    //        var requestInfo = string.Format("{0} {1}", request.Method, request.RequestUri);
-
-    //        _logger.Info(requestInfo);
-
-    //        if (_logger.IsDebugEnabled)
-    //        {
-    //           _logger.Debug(String.Format("Start Time: {0}", DateTime.Now));
-    //           _logger.Debug( request.Content.ReadAsStringAsync().Result);
-
-    //           var headers = request.Headers.ToList().Select(x => string.Format("{0} : {1}", x.Key, x.Value.FirstOrDefault())).Aggregate((x,y)=>x+" , "+y);
-    //           _logger.Debug(String.Format("{0} Start Time: {1}", corrId, headers));
-    //        }
-
-    //        var response = await base.SendAsync(request, cancellationToken);
-
-    //        response.Headers.Add(Headers.X_VOL_CORRELATION, corrId.ToString());
-
-    //        try
-    //        {
-    //            if (_logger.IsDebugEnabled)
-    //            {
-    //                if (response.IsSuccessStatusCode && response.Content != null)
-    //                    _logger.Debug(response.Content.ReadAsStringAsync().Result);
-
-    //                _logger.Debug(String.Format("End Time: {0}", DateTime.Now));
-    //            }
-
-    //        }
-    //        catch (Exception exc){}
-
-
-    //        return response;
-    //    }
-    //}
-
+    
     public class ApiLogger
     {
         //private readonly bool _isRequestResponseLoggingEnabled = false;
@@ -110,20 +56,8 @@ namespace Mozu.Api.WebToolKit.Logging
 
             if (_logger.IsInfoEnabled)
             {
-                //Adding required headers till the APIAuthFilter cookies are fixed
-
-                //if (!request.Headers.ContainsKey(Headers.X_VOL_TENANT))
-                //{
-                //    request.Headers.Add(Headers.X_VOL_TENANT, "18239");
-                //}
-
-                //if (!request.Headers.ContainsKey(Headers.USERID))
-                //{
-                //    request.Headers.Add(Headers.USERID, "355060a60a5e48eeb7f2fb8d92af2ba5");
-                //}
-
-
-                HttpRequestRewindExtensions.EnableBuffering(request);// request.EnableBuffering();
+                
+                HttpRequestRewindExtensions.EnableBuffering(request);
                 var requestStream = _recyclableMemoryStreamManager.GetStream();
                 await context.Request.Body.CopyToAsync(requestStream);
                 _logger.Info(String.Format("Start Time: {0}", DateTime.UtcNow));

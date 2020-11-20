@@ -6,7 +6,7 @@ using System;
 
 namespace Mozu.Api.WebToolKit.Events
 {
-    public class EventRouteHandler //: IRouteHandler
+    public class EventRouteHandler 
     {
         public IServiceProvider Container;
 
@@ -14,10 +14,5 @@ namespace Mozu.Api.WebToolKit.Events
         {
             Container = iComponentContext;
         }
-
-        //public IHttpHandler GetHttpHandler(RequestContext requestContext)
-        //{
-        //    return Container.GetService(EventHttpHandler);
-        //}
     }
 }

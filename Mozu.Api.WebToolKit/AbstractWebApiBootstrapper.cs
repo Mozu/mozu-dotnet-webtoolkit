@@ -19,43 +19,14 @@ namespace Mozu.Api.WebToolKit
 {
     public abstract class AbstractWebApiBootstrapper : AbstractBootstrapper
     {
-
-        //private HttpConfiguration _httpConfiguration;
-
-        //public AbstractWebApiBootstrapper Bootstrap(HttpConfiguration httpConfiguration)
-        //{
-        //    _httpConfiguration = httpConfiguration;
-        //    Bootstrap();
-        //    return this;
-        //}
-
         public  void InitializeContainer(IServiceCollection containerBuilder)
         {
-            base.Configure(containerBuilder);//.InitializeContainer(containerBuilder);
-            
-            //containerBuilder.RegisterType<EventHttpHandler>().AsSelf();
-            //containerBuilder.RegisterType<EventRouteHandler>().AsSelf();
-            //containerBuilder.RegisterType<ApiLogger>().AsSelf().InstancePerRequest();
-            //containerBuilder.RegisterType<MvcLoggingFilter>().AsSelf().InstancePerRequest();
-            //containerBuilder.RegisterType<VersionController>().InstancePerRequest();
-            //containerBuilder.RegisterType<ApplicationController>().InstancePerRequest();
-            //containerBuilder.AddTransient<EventHttpHandler>();
+            base.Configure(containerBuilder);
             containerBuilder.AddTransient<EventRouteHandler>();
-            //containerBuilder.AddTransient<ApiLogger>();
             containerBuilder.AddTransient<MvcLoggingFilter>();
             containerBuilder.AddTransient<VersionController>();
             containerBuilder.AddTransient<ApplicationController>();
-            //containerBuilder.AddSingleton<ApiLogger>();
         }
-
-
-        //public override void PostInitialize()
-        //{
-        //    base.PostInitialize();
-        //    _httpConfiguration.DependencyResolver = new AutofacWebApiDependencyResolver(Container);
-        //    DependencyResolver.SetResolver(new AutofacDependencyResolver(Container));
-        //    _httpConfiguration.MessageHandlers.Add(DependencyResolver.Current.GetService<ApiLogger>());
-        //}
 
     }
 }

@@ -66,34 +66,7 @@ namespace Mozu.Api.WebToolKit.Filters
             return false;
         }
 
-        //public static bool Validate(HttpRequestMessage request)
-        //{
-        //    var tenantId = GetCookie(request.Headers, "tenantId");
-        //    if (String.IsNullOrEmpty(tenantId)) throw new UnauthorizedAccessException();
-
-        //    var hash =  GetCookie(request.Headers, "hash");
-        //    if (string.IsNullOrEmpty(hash)) throw new UnauthorizedAccessException();
-
-        //    var userId = GetCookie(request.Headers, Headers.USERID);
-        //    if (!request.RequestUri.AbsoluteUri.Contains(tenantId)) return false;
-
-        //    var returnUrl = GetCookie(request.Headers, Headers.X_VOL_RETURN_URL);
-
-        //    request.Headers.Add(Headers.X_VOL_TENANT, tenantId);
-        //    request.Headers.Add(Headers.X_VOL_HMAC_SHA256, hash);
-        //    request.Headers.Add(Headers.X_VOL_RETURN_URL, returnUrl);
-        //    if (!string.IsNullOrEmpty(userId))
-        //        request.Headers.Add(Headers.USERID, userId);
-
-        //    var apiContext = new ApiContext(request.Headers);
-
-        //    var formToken = GetCookie(request.Headers, "formToken");
-        //    if (string.IsNullOrEmpty(formToken)) return false;
-
-        //    var cookieToken = GetCookie(request.Headers, "cookieToken");
-        //    var isSubNavLink = GetCookie(request.Headers, "subNavLink") == "1";
-        //    return !string.IsNullOrEmpty(cookieToken) && Validate(apiContext, formToken, cookieToken,isSubNavLink);
-        //}
+        
 
         private static bool Validate(HttpRequest request,IApiContext apiContext, string formToken, string cookieToken, bool isSubNavLink)
         {
@@ -102,14 +75,12 @@ namespace Mozu.Api.WebToolKit.Filters
             try
             {
                 var antiForgery = request.HttpContext.RequestServices.GetService<IAntiforgery>();
-                //antiForgery.ValidateRequestAsync(request.HttpContext).Wait();
-                //AntiForgery.Validate(cookieToken, formToken);
-                tokens = antiForgery.GetTokens(request.HttpContext);//.GetTokens(null, out cookieToken, out formToken);
-                //string cookieToken = tokens.CookieToken;
-                //string formToken = tokens.FormFieldName;
+                tokens = antiForgery.GetTokens(request.HttpContext);
+                
             }
             catch (Exception exc)
             {
+                _logger.Error(exc.Message, exc);
                 return false;
             }
 
@@ -146,14 +117,6 @@ namespace Mozu.Api.WebToolKit.Filters
 
             return true;
         }
-
-        //public static string GetCookie(HttpRequestHeaders headers, string name)
-        //{
-        //    var cookies = headers[name].FirstOrDefault();
-        //    if (cookies == null) return null;
-        //    var cookie = cookies.Cookies.SingleOrDefault(x => x.Name == name);
-        //    return cookie == null ? null : cookie.Value;
-        //}
 
         public static string GetCookie(IRequestCookieCollection cookieCollection, string name)
         {
