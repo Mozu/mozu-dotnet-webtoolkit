@@ -54,7 +54,7 @@ namespace Mozu.Api.WebToolKit.Filters
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = path,
+                Path = "/",
                 Secure = true,
                 HttpOnly = true,
                 SameSite=SameSiteMode.None,
