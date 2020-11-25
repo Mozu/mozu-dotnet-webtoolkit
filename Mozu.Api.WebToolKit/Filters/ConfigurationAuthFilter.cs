@@ -30,7 +30,11 @@ namespace Mozu.Api.WebToolKit.Filters
             base.OnActionExecuting(filterContext);
 
             if (!ConfigurationAuth.IsRequestValid(filterContext.HttpContext.Request))
-                throw new SecurityException("Unauthorized");
+            {
+                filterContext.HttpContext.Response.StatusCode = 401;
+                filterContext.Result = new UnauthorizedResult();
+                return;
+            }
 
             var request = filterContext.HttpContext.Request;
             var apiContext = new ApiContext(request.Headers.DictionaryToNVCollection()); //try to load from headers
@@ -47,7 +51,8 @@ namespace Mozu.Api.WebToolKit.Filters
                     filterContext.Result = new UnauthorizedResult();
                     return;
                 }
-                apiContext = new ApiContext(int.Parse(tenantId));
+                //apiContext = new ApiContext(int.Parse(tenantId));
+                apiContext.TenantId = int.Parse(tenantId);
             }
             var requestUri = filterContext.HttpContext.Request.PathBase.Value.Split('/');
             string path ="/"+ requestUri[1] + "/" + apiContext.TenantId.ToString();
