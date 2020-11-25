@@ -49,12 +49,12 @@ namespace Mozu.Api.WebToolKit.Filters
                 }
                 apiContext = new ApiContext(int.Parse(tenantId));
             }
-            var requestUri = filterContext.HttpContext.Request.Path.Value.Split('/');
+            var requestUri = filterContext.HttpContext.Request.PathBase.Value.Split('/');
             string path ="/"+ requestUri[1] + "/" + apiContext.TenantId.ToString();
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddHours(1),
-                Path = "/",
+                Path = path,
                 Secure = true,
                 HttpOnly = true,
                 SameSite=SameSiteMode.None,
